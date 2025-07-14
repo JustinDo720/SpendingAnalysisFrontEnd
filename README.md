@@ -20,3 +20,17 @@ Intutive and straight-forward UI for file uploads, saving reports + generating s
 - Navbar Focus: #f8f9fb
 - Primary Variant: #565f6e
 - Secondary Variant: #a2acbd
+
+## Development 
+
+**07/14/25**
+- Spending Analysis Navbar + Home Page 
+- Clear Description on what Spending Analysis is for (tracking expenditure)
+- Report Submission File Upload (CSV only)
+- Report Summary Component (props + generated after submission)
+- Routers?
+  - `npm install react-router-dom`
+  - Router, Routes, Route in `App.js` with all the components as elements
+  - Used `Link` in Navbar to bind our `Nav.Link` to Routes 
+
+Result: Simple UI for CSV File Submission + Single Summary Componeent all with routes. 

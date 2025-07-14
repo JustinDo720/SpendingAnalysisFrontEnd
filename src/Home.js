@@ -5,26 +5,45 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
+import SingleSummary from './SingleSummary';
 import { useState } from 'react';
+import axios from 'axios'
 
 export default function Home(){
     const [file, setFile] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [baseURL, setBaseURL] = useState('http://localhost:8000')
+    const [msg, setMsg] = useState('') 
+    const [showMsg, setShowMsg] = useState(false)
+    const [singleSummary, setSingleSummary] = useState(null)
 
+    const closeShowMsg = ()=>{
+        setShowMsg(false)
+    }
+    
     const changeFile = (e)=>{
         // We could grab the file from target 
         setFile(e.target.files[0])
     }
 
     const uploadFile = (e)=>{
-        setLoading(true)
         e.preventDefault()
         // Run your axios call here
         const fd = new FormData()
         fd.append('file',file)
-
-        console.log(fd)
-        setLoading(false)
+        setLoading(true)
+        axios.post(`${baseURL}/uploads/`, fd,{'content-type': 'multipart/form-data'}).then((r)=>{
+            console.log(r)
+            if(r.data.message){
+                // File was submitted successfully
+                setMsg(r.data.message)
+                setSingleSummary(r.data.spending_summary)
+                setShowMsg(true)
+                setLoading(false)
+            }
+        })
     }
 
     return (
@@ -39,12 +58,12 @@ export default function Home(){
                             <Row>
                                 <Col>
                                     <Container 
-                                        style={{'background-color': '#565f6e', 'padding': '40px', 'border-radius': '20px 10px 20px 10px', 'color':'#f8f9fb'}}>
+                                        style={{'background-color': '#565f6e', 'padding': '40px', 'border-radius': '10px 25px 10px 25px', 'color':'#f8f9fb'}}>
                                             <p className='fs-4'>
                                                 <b>We</b> help you track and understand your financial habits by breaking down your expenses into clear, visual insights.
                                             </p>
                                             <hr></hr>
-                                            <Card>
+                                            <Card className='mb-5'>
                                                 <Card.Header as="h4">Report Submission</Card.Header>
                                                 <Card.Body>
                                                     <Form.Group controlId="formFile" className="mb-3">
@@ -73,6 +92,7 @@ export default function Home(){
                                                     </div>
                                                 </Card.Body>
                                             </Card>
+                                            <SingleSummary singleSummary={singleSummary}></SingleSummary>
                                     </Container>
                                 </Col>
                             </Row>
@@ -80,6 +100,26 @@ export default function Home(){
                     </Col>
                 </Row>
             </Container>
+            <ToastContainer
+                className="p-3"
+                position="bottom-end"
+                style={{ zIndex: 1 }}
+            >
+                <Toast show={showMsg} onClose={closeShowMsg} delay={5000} autohide bg='success'>
+                    <Toast.Header>
+                        <img
+                        src="sa_logo.png"
+                        width="35"
+                        height="35"
+                        className="rounded me-2"
+                        alt="Spending Analysis"
+                        />
+                        <strong className="me-auto">Message</strong>
+                        
+                    </Toast.Header>
+                    <Toast.Body>{msg}</Toast.Body>
+                </Toast>
+            </ToastContainer>
         </>
     )
 }
