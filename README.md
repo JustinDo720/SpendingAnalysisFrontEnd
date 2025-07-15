@@ -34,3 +34,13 @@ Intutive and straight-forward UI for file uploads, saving reports + generating s
   - Used `Link` in Navbar to bind our `Nav.Link` to Routes 
 
 Result: Simple UI for CSV File Submission + Single Summary Componeent all with routes. 
+
+<img src='spending_analysis_demo1.gif'>
+
+
+**07/15/25**
+- Reports Table to display all uploaded files
+- Summary Button to open Modal 
+- Displays Tabs with **Specific Details**, **Top 5 Vendors** **Spending per Category & Vendor**
+  
+Result: Reports table with Summary modal to display summary information based on file.

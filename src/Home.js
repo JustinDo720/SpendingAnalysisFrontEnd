@@ -52,15 +52,13 @@ export default function Home(){
                 <Row className='justify-content-md-center'>
                     <Col md='10'>
                         <Container>
-                            <Row className='mb-4'>
-                                <h2 className='text-center fw-semibold fs-2'>Spending Analysis</h2>
-                            </Row>
                             <Row>
                                 <Col>
                                     <Container 
                                         style={{'background-color': '#565f6e', 'padding': '40px', 'border-radius': '10px 25px 10px 25px', 'color':'#f8f9fb'}}>
+                                            <h2 className='text-center fw-semibold fs-2 mb-5'>Spending Analysis</h2>
                                             <p className='fs-4'>
-                                                <b>We</b> help you track and understand your financial habits by breaking down your expenses into clear, visual insights.
+                                                We help you track and understand your financial habits by breaking down your expenses into clear, visual insights.
                                             </p>
                                             <hr></hr>
                                             <Card className='mb-5'>

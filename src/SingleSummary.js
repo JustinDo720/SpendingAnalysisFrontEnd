@@ -8,7 +8,7 @@ export default function SingleSummary(props){
 
     useEffect(()=>{
         setSummary(props.singleSummary)
-    })
+    }, [])
 
     return(
         <>
