@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Spinner from 'react-bootstrap/Spinner';
 
 export default function ListReports(){
 
@@ -18,6 +19,8 @@ export default function ListReports(){
     const [fileName, setFileName] = useState(null)
     const [fileSummary, setFileSummary] = useState(null)
     const [fileTransactions, setFileTransactions] = useState(null)
+    const [fileDownload, setFileDownload] = useState(null)
+    const [uploadLoading, setUploadLoading] = useState(false)
 
     useEffect(()=>{
         axios.get(`${baseURL}/uploads/`).then(r=>{
@@ -37,9 +40,44 @@ export default function ListReports(){
         axios.get(file_url).then(r=>{
 
             setFileTransactions(r.data.transactions)
+            setFileDownload(`${r.data.summary_url}download/`)
             axios.get(r.data.summary_url).then(r=>{
                 setFileSummary(r.data)
+
             })
+        })
+    }
+
+    const savePDF = (e)=>{
+        e.preventDefault()
+        setUploadLoading(true)
+        axios.get(fileDownload,{responseType: 'blob'}).then(r=>{
+            // Build a link to automatically click 
+            const blob = new Blob([r.data])
+            const url = window.URL.createObjectURL(blob)
+
+            const link = document.createElement('a')
+            link.href = url 
+
+            // Extracting filename 
+            // Make sure in Django we have: response['Access-Control-Expose-Headers'] = 'Content-Disposition' because of axios
+            const cD = r.headers['content-disposition']     // remember we set filename=''
+            let baseFileName = 'summary_report.pdf'
+            if(cD){
+                // regex to find specifically our filename=
+                const match = cD.match(/filename="(.+)"/);
+                if(match.length > 1){
+                    baseFileName = match[1]
+                }
+            }
+            link.setAttribute('download', baseFileName)
+            
+            // Appending our link then clicking 
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            setUploadLoading(false)
+
         })
     }
 
@@ -195,11 +233,26 @@ export default function ListReports(){
                                                 </Table>
                                         </Tab>
                                     </Tabs>
-                                    <div className='mt-5' style={{'textAlign':'end'}}>
-                                        <Button>
-                                            Save as PDF
-                                        </Button>
-                                    </div>
+                                    {uploadLoading?
+                                        <div className='mt-5' style={{'textAlign':'end'}}>
+                                            <Button variant="primary" disabled>
+                                                <Spinner
+                                                as="span"
+                                                animation="grow"
+                                                size="sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                                />
+                                                    Downloading Report File...
+                                            </Button>
+                                        </div>
+                                    :
+                                        <div className='mt-5' style={{'textAlign':'end'}}>
+                                            <Button onClick={savePDF}>
+                                                Save as PDF
+                                            </Button>
+                                        </div>
+                                    }
                                 </Container>
                         </Col>
                     </Row>

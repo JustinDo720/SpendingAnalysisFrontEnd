@@ -44,3 +44,12 @@ Result: Simple UI for CSV File Submission + Single Summary Componeent all with r
 - Displays Tabs with **Specific Details**, **Top 5 Vendors** **Spending per Category & Vendor**
   
 Result: Reports table with Summary modal to display summary information based on file.
+
+**07/16/25** 
+- Downloadable Summary Data Button 
+  - `{responseType: 'blob'}` in headers 
+  - `window.Url.createObjectUrl(new Blob([r.data]))` for the url 
+  - Create link element then we could `link.click()` for download 
+  - `Content-Disposition` has our file name so we run a regex match: `cD.match(/filename="(.+)"/);`
+  
+Result: Save PDF calls our backend for file download (Dynamic File Name)
